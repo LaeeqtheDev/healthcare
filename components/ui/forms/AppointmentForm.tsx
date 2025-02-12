@@ -76,7 +76,6 @@ export const AppointmentForm = ({
           userId,
           patient: patientId,
           primaryPhysician: values.primaryPhysician,
-          // Convert Date to string (ISO format)
           schedule: values.schedule.toISOString(),
           reason: values.reason!,
           status: status as Status,
@@ -95,9 +94,10 @@ export const AppointmentForm = ({
         const appointmentToUpdate = {
           userId,
           appointmentId: appointment?.$id!,
+          // Add timeZone here:
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           appointment: {
             primaryPhysician: values.primaryPhysician,
-            // Convert Date to string (ISO format)
             schedule: values.schedule.toISOString(),
             status: status as Status,
             cancellationReason: values.cancellationReason,
