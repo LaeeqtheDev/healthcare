@@ -44,9 +44,7 @@ export const AppointmentForm = ({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
       primaryPhysician: appointment ? appointment.primaryPhysician : "",
-      schedule: appointment
-        ? new Date(appointment.schedule)
-        : new Date(Date.now()),
+      schedule: appointment ? new Date(appointment.schedule) : new Date(),
       reason: appointment ? appointment.reason : "",
       note: appointment?.note || "",
       cancellationReason: appointment?.cancellationReason || "",
@@ -76,6 +74,7 @@ export const AppointmentForm = ({
           userId,
           patient: patientId,
           primaryPhysician: values.primaryPhysician,
+          // Convert Date to ISO string as required by CreateAppointmentParams
           schedule: values.schedule.toISOString(),
           reason: values.reason!,
           status: status as Status,
@@ -91,10 +90,10 @@ export const AppointmentForm = ({
           );
         }
       } else {
+        // When updating, ensure you include the timeZone property and narrow the type
         const appointmentToUpdate = {
           userId,
           appointmentId: appointment?.$id!,
-          // Add timeZone here:
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           appointment: {
             primaryPhysician: values.primaryPhysician,
@@ -102,7 +101,7 @@ export const AppointmentForm = ({
             status: status as Status,
             cancellationReason: values.cancellationReason,
           },
-          type,
+          type: type as "schedule" | "cancel",
         };
 
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
