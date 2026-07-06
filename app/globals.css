@@ -26,6 +26,34 @@
   }
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.pulse-draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw-pulse 2.4s ease-out forwards;
+}
+
+@keyframes draw-pulse {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
 @layer utilities {
   /* ===== UTILITIES */
   .sidebar {

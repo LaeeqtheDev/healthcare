@@ -97,7 +97,7 @@ export const AppointmentForm = ({
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           appointment: {
             primaryPhysician: values.primaryPhysician,
-            schedule: values.schedule.toISOString(),
+            schedule: new Date(values.schedule),
             status: status as Status,
             cancellationReason: values.cancellationReason,
           },
