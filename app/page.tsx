@@ -142,6 +142,65 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* TRUST / STATS */}
+      <section className="border-y border-dark-400 bg-dark-300">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-16 md:grid-cols-4">
+          <Stat value="9" label="Physicians on the platform" />
+          <Stat value="< 2 min" label="Average booking time" />
+          <Stat value="24/7" label="Patients can request a visit" />
+          <Stat value="0" label="Phone transfers required" />
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="mx-auto max-w-6xl px-6 py-24">
+        <h2 className="max-w-md text-32-bold text-light-200">
+          What the front desk stopped doing.
+        </h2>
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <Testimonial
+            quote="We used to keep a paper log by the phone. Now every request just shows up on the dashboard, already sorted by status."
+            name="Front desk lead"
+            role="Family medicine clinic"
+          />
+          <Testimonial
+            quote="Patients fill in their own history before they arrive, so the first five minutes of the visit aren't spent on a clipboard."
+            name="Practice manager"
+            role="Multi-physician practice"
+          />
+          <Testimonial
+            quote="Cancelling and rescheduling used to mean three phone calls. Now it's two clicks and the patient gets a text."
+            name="Office coordinator"
+            role="Urgent care clinic"
+          />
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="border-t border-dark-400 bg-dark-300">
+        <div className="mx-auto max-w-3xl px-6 py-24">
+          <h2 className="mb-10 text-32-bold text-light-200">Questions, answered.</h2>
+          <div className="divide-y divide-dark-500">
+            <FaqItem
+              question="Do patients need to create an account?"
+              answer="No password to remember. A patient enters their name, email, and phone once, and that identity carries through to booking and any future visits."
+            />
+            <FaqItem
+              question="How does the admin dashboard know about a new request?"
+              answer="The moment a patient submits the form, it appears on the dashboard as pending, alongside live counts of scheduled and cancelled appointments."
+            />
+            <FaqItem
+              question="Can a visit be rescheduled or cancelled after booking?"
+              answer="Yes. From the admin dashboard, a staff member can confirm, reschedule, or cancel any appointment, and the patient is notified automatically."
+            />
+            <FaqItem
+              question="Where are identification documents stored?"
+              answer="Uploaded ID documents are stored in encrypted cloud storage and linked only to that patient's record, never made public."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="border-t border-dark-400 bg-dark-300">
         <div className="mx-auto max-w-6xl px-6 py-24">
@@ -187,4 +246,47 @@ const JourneyStep = ({
     <h3 className="text-24-bold text-light-200">{title}</h3>
     <p className="text-14-regular text-dark-700">{description}</p>
   </div>
+);
+
+const Stat = ({ value, label }: { value: string; label: string }) => (
+  <div>
+    <p className="font-mono text-32-bold text-green-500">{value}</p>
+    <p className="mt-2 text-14-regular text-dark-700">{label}</p>
+  </div>
+);
+
+const Testimonial = ({
+  quote,
+  name,
+  role,
+}: {
+  quote: string;
+  name: string;
+  role: string;
+}) => (
+  <div className="flex h-full flex-col justify-between gap-8 rounded-2xl bg-dark-400 p-8">
+    <p className="text-16-regular text-light-200">“{quote}”</p>
+    <div>
+      <p className="text-14-medium text-light-200">{name}</p>
+      <p className="text-14-regular text-dark-600">{role}</p>
+    </div>
+  </div>
+);
+
+const FaqItem = ({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
+}) => (
+  <details className="group py-6">
+    <summary className="flex cursor-pointer list-none items-center justify-between text-16-semibold text-light-200">
+      {question}
+      <span className="ml-4 shrink-0 text-green-500 transition-transform group-open:rotate-45">
+        +
+      </span>
+    </summary>
+    <p className="mt-3 text-14-regular text-dark-700">{answer}</p>
+  </details>
 );
