@@ -448,3 +448,77 @@ punishes a practice for giving the receptionist a login, which is exactly
 the behaviour you want.
 
 All pricing lives in `lib/marketing.ts`, editable without touching JSX.
+
+
+---
+
+# Landing page rebuild + calculator correction
+
+## You were right that something was wrong. It was not the direction.
+
+Higher no-show rate correctly produces a larger loss. At 120 appointments a
+week and $180 each, 1% gives $10,800 and 12% gives $129,600. Lower rate,
+smaller number.
+
+**But there was a real bug, and it is almost certainly what you saw.** The
+old formula rounded the WEEKLY figure before multiplying by 50 weeks:
+
+```js
+Math.round(perWeek * rate / 100) * 50   // wrong
+```
+
+Two visible defects fell out of that:
+
+- **Jumps.** At 120 a week, 2% showed 100 missed and 3% showed 200. The
+  displayed loss *doubled* for a one-point move, which makes the whole
+  calculator look invented.
+- **Zero.** A 10-appointment-a-week practice at any rate under 5% rounded to
+  0 missed per week, so the result read as a loss of nothing at all. The
+  practices most likely to doubt the product got the least convincing
+  number.
+
+Now rounds at the annual level, and the output also shows the weekly figure
+so the arithmetic is legible rather than taken on trust.
+
+## Landing page, rebuilt
+
+**Dark hero.** The single cheapest way to make a page read as a product
+rather than a template: it gives the product screenshot somewhere to glow
+against and creates one focal point instead of a wall of even-toned cards.
+Layered radial gradients, a faint masked engineering grid, and a staggered
+entrance animation that lands the eye on the headline first.
+
+**Headline changed from a statement to an accusation.** "Your front desk
+spends half its day on the phone" described a fact. "Half your front desk's
+day **is the telephone**" is the reader's Tuesday.
+
+**New sections, each doing a specific job:**
+
+| Section | Job |
+| --- | --- |
+| Announcement bar | Removes the two biggest hesitations before the fold: free, live today |
+| How it works, in 3 | A buyer understands the entire product before scrolling twice |
+| Comparison table | Names the real competitors: the phone, and a generic booking tool |
+| Security block | Answers the compliance question on the homepage, not in a policy |
+| Proper footer | Four columns; the old one was two links |
+
+**The comparison table is the most commercially useful addition.** The
+competitor here is almost never another clinical system, it is the phone and
+a paper diary, or a tool the practice already pays for. Naming both and
+being fair about what they do well is more persuasive than pretending they
+do not exist, and it pre-empts the objection the prospect is already
+forming. Rows that cannot honestly be yes or no render a qualified answer
+("Paper", "If someone checks", "Extra cost") rather than being forced into a
+tick.
+
+## One thing I did not add, deliberately
+
+**No customer logos and no testimonials.** Those are the two strongest
+elements on a landing page like this, and I will not fabricate them. Invented
+social proof in healthcare is both a legal problem and the fastest way to
+lose a practice manager who checks.
+
+That is the highest-value thing you can add yourself, and it costs nothing:
+after your first clinic is live, ask for two sentences and permission to use
+their name. One real quote from a named practice outperforms every section
+on this page.

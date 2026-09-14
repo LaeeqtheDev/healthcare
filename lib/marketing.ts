@@ -25,13 +25,109 @@
  */
 
 export const hero = {
-  eyebrow: "Patient scheduling for dental, medical and allied practices",
-  headline: "Your front desk spends half its day on the phone.",
-  headlineAccent: "Get that day back.",
-  sub: "Patients book themselves in about two minutes. Reminders send on their own. Your team sees every request on one screen and confirms with a click. No new hardware, no training week.",
-  primaryCta: "Book a demo appointment",
-  secondaryCta: "See it from the patient's side",
+  eyebrow: "Now onboarding dental and medical practices",
+  headline: "Half your front desk's day",
+  headlineAccent: "is the telephone.",
+  sub: "CarePulse gives it back. Patients book themselves in about two minutes, reminders send on their own, and your team runs the whole day from one screen. Live the same afternoon you sign up.",
+  primaryCta: "See the 2-minute booking",
+  secondaryCta: "Open the staff worklist",
 };
+
+/** Three steps, above the fold. A buyer should understand the whole
+ * product before they scroll twice. */
+export const howItWorks = [
+  {
+    step: "01",
+    title: "Patient books themselves",
+    detail:
+      "They pick a clinician, a time and a reason. No account, no password, no phone queue. Two minutes on a phone in a waiting room or at 11pm on a sofa.",
+  },
+  {
+    step: "02",
+    title: "It lands on your worklist",
+    detail:
+      "Pending, with their details and history attached. Your team confirms, reschedules or declines in one click, and the patient is texted automatically.",
+  },
+  {
+    step: "03",
+    title: "Nobody chases anyone",
+    detail:
+      "Confirmations and reminders send on a schedule you set, each with a one-tap reschedule link. Missed appointments become moved appointments.",
+  },
+];
+
+/**
+ * Comparison table.
+ *
+ * The competitor is almost never another clinical system. It is the phone
+ * and a paper diary, or a generic booking tool the practice already pays
+ * for. Naming both and being fair about what they do well is more
+ * persuasive than pretending they do not exist, and it pre-empts the
+ * objection a prospect was already forming.
+ */
+export const comparison = {
+  columns: ["Phone & paper diary", "Generic booking tool", "CarePulse"],
+  rows: [
+    {
+      feature: "Patients can book outside office hours",
+      values: [false, true, true],
+    },
+    {
+      feature: "Medical history collected before the visit",
+      values: [false, false, true],
+    },
+    {
+      feature: "Clinical notes and patient records",
+      values: ["Paper", false, true],
+    },
+    {
+      feature: "Allergies visible before a clinician walks in",
+      values: ["If someone checks", false, true],
+    },
+    {
+      feature: "Automated SMS reminders",
+      values: [false, "Extra cost", true],
+    },
+    {
+      feature: "Built around clinicians, not sales calls",
+      values: [true, false, true],
+    },
+    {
+      feature: "Works when the receptionist is on lunch",
+      values: [false, true, true],
+    },
+    {
+      feature: "Patient data stays gated and auditable",
+      values: ["Filing cabinet", "Varies", true],
+    },
+  ],
+};
+
+/**
+ * Security and data handling.
+ *
+ * On the landing page rather than buried in a policy, because in
+ * healthcare this is a purchase blocker, not a footnote. Stated plainly
+ * and without overclaiming: see the HIPAA answer in the FAQ.
+ */
+export const assurances = [
+  {
+    title: "Encrypted end to end",
+    detail: "In transit and at rest, including uploaded documents.",
+  },
+  {
+    title: "Gated staff access",
+    detail: "Patient data is never public and never reaches an unauthenticated browser.",
+  },
+  {
+    title: "Your data stays yours",
+    detail: "Never sold, never used to train anything, exportable on request.",
+  },
+  {
+    title: "Append-only clinical notes",
+    detail: "Nothing in the record can be quietly rewritten after the fact.",
+  },
+];
 
 export const trustStats = [
   { value: "~2 min", label: "for a patient to book, start to finish" },

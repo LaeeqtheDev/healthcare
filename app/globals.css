@@ -90,6 +90,40 @@
     @apply text-[0.6875rem] font-semibold uppercase tracking-[0.08em];
   }
 
+  /* ===== Dark hero =============================================
+     A dark hero against light content below is the single cheapest way
+     to make a page read as a product rather than a template: it gives
+     the product screenshot somewhere to glow against, and it creates one
+     clear focal point instead of a wall of even-toned cards. */
+  .hero-dark {
+    background:
+      radial-gradient(70% 90% at 78% 8%, rgba(27, 99, 184, 0.35), transparent 62%),
+      radial-gradient(48% 70% at 12% 92%, rgba(11, 122, 90, 0.20), transparent 60%),
+      linear-gradient(168deg, #0B1520 0%, #132231 58%, #0E1A26 100%);
+  }
+
+  /* Faint engineering grid. Subtle enough to read as texture rather than
+     decoration, which is the difference between "technical" and "busy". */
+  .hero-grid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(70% 60% at 50% 30%, #000 30%, transparent 78%);
+    -webkit-mask-image: radial-gradient(70% 60% at 50% 30%, #000 30%, transparent 78%);
+    pointer-events: none;
+  }
+
+  /* Entrance animation for the hero column. Staggered with inline delays
+     so the eye lands on the headline first. Honours reduced motion via
+     the global rule in @layer base. */
+  .rise {
+    animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
   /* ===== Surfaces ============================================= */
   .card {
     @apply rounded-lg border border-line bg-surface shadow-card;

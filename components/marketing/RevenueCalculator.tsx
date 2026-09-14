@@ -58,10 +58,26 @@ export function RevenueCalculator() {
     }).format(n);
 
   const { lost, low, high, missed } = useMemo(() => {
-    // 50 weeks rather than 52, so the figure does not quietly assume a
-    // practice that never closes.
-    const missedAppointments =
-      Math.round((perWeek * rate) / 100) * WORKING_WEEKS;
+    /* Rounds at the ANNUAL level, not the weekly one.
+     *
+     * The previous version did Math.round(perWeek * rate / 100) * 50,
+     * which rounded a fractional weekly figure before multiplying it by
+     * fifty. That produced two visible defects:
+     *
+     *   - Jumps. At 120 appointments a week, 2% showed 100 missed and 3%
+     *     showed 200. The displayed loss doubled for a one-point move,
+     *     which makes the whole calculator look made up.
+     *   - Zero. A 10-appointment-a-week practice at any rate under 5%
+     *     rounded to 0 missed per week, so the result read as a loss of
+     *     nothing at all. Exactly the practices most likely to doubt the
+     *     product got the least convincing number.
+     *
+     * 50 weeks rather than 52, so the figure does not quietly assume a
+     * practice that never closes.
+     */
+    const missedAppointments = Math.round(
+      (perWeek * WORKING_WEEKS * rate) / 100
+    );
     const lostTotal = missedAppointments * value;
     return {
       missed: missedAppointments,
@@ -137,12 +153,17 @@ export function RevenueCalculator() {
               {money(lost)}
             </p>
             <p className="t-small mt-3 text-ink-muted">
-              Roughly{" "}
+              That is{" "}
               <span className="font-semibold text-ink">
                 {missed.toLocaleString(currency.locale)}
               </span>{" "}
-              appointments a year that were booked and did not happen, across{" "}
-              {WORKING_WEEKS} working weeks.
+              appointments a year, about{" "}
+              <span className="font-semibold text-ink">
+                {Math.round((perWeek * rate) / 100).toLocaleString(
+                  currency.locale
+                )}
+              </span>{" "}
+              a week, that were booked and did not happen.
             </p>
           </div>
 
