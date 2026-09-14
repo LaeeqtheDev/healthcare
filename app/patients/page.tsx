@@ -1,43 +1,35 @@
-import Image from "next/image";
-import Link from "next/link";
+import type { Metadata } from "next";
 
+import { PatientShell, } from "@/components/clinical/PatientShell";
+import { PrivacyNote, Stepper } from "@/components/clinical/Stepper";
 import Patientform from "@/components/ui/forms/Patientform";
+
+export const metadata: Metadata = {
+  title: "Book an appointment · CarePulse",
+  description:
+    "Request an appointment with your practice in about two minutes. No account needed.",
+  robots: { index: false, follow: false },
+};
 
 export default function PatientsHome() {
   return (
-    <div className="flex h-screen max-h-screen">
-      <section className="remove-scrollbar container my-auto">
-        <div className="sub-container max-w-[496px]">
-          <Link href="/">
-            <Image
-              src="/assets/icons/logo-full.svg"
-              alt="patient"
-              height={1000}
-              width={1000}
-              className="mb-12 h10 w-fit"
-            />
-          </Link>
+    <PatientShell
+      aside="/assets/images/onboarding-img.png"
+      asideAlt="Clinician meeting a patient"
+    >
+      <Stepper current={0} />
 
-          <Patientform />
+      <h1 className="t-h1 text-ink">Let&apos;s get you booked in.</h1>
+      <p className="t-body mt-2.5 text-ink-muted">
+        Three short steps, about two minutes. You do not need to create an
+        account or remember a password.
+      </p>
 
-          <div className="text-14-regular mt-20 flex justify-between">
-            <p className="justify-items-end text-dark-600 xl:text-left">
-              © 2026 CarePulse
-            </p>
-            <Link href="/admin" className="text-green-500">
-              Admin
-            </Link>
-          </div>
-        </div>
-      </section>
+      <div className="mt-8">
+        <Patientform />
+      </div>
 
-      <Image
-        src="/assets/images/onboarding-img.png"
-        height={1000}
-        width={1000}
-        alt="patient"
-        className="side-img max-w-[50%]"
-      />
-    </div>
+      <PrivacyNote />
+    </PatientShell>
   );
 }

@@ -1,41 +1,42 @@
-import RegisterForm from '@/components/ui/forms/RegisterForm'
-import { getUser } from '@/lib/actions/patient.actions'
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
+import type { Metadata } from "next";
 
+import { PatientShell } from "@/components/clinical/PatientShell";
+import { PrivacyNote, Stepper } from "@/components/clinical/Stepper";
+import RegisterForm from "@/components/ui/forms/RegisterForm";
+import { getUser } from "@/lib/actions/patient.actions";
 
-const Register = async ({params:{userId} }: SearchParamProps) => {
-  const user =  await getUser(userId)
+export const metadata: Metadata = {
+  title: "Your details · CarePulse",
+  robots: { index: false, follow: false },
+};
+
+export const dynamic = "force-dynamic";
+
+const Register = async ({ params }: { params: { userId: string } }) => {
+  const { userId } = params;
+  const user = await getUser(userId);
+
   return (
-    <div className="flex h-screen max-h-screen">
- 
-   <section className="remove-scrollbar container ">
-      <div className="sub-container max-w-[860px] flex-1 flex-col py-10">
-       <Image
-       src="/assets/icons/logo-full.svg"
-       alt="patient"
-       height={1000}
-       width={1000}
-       className="mb-12 h10 w-fit"
-       />
+    <PatientShell
+      aside="/assets/images/register-img.png"
+      asideAlt="Practice reception"
+      width="max-w-[720px]"
+    >
+      <Stepper current={1} />
 
-      <RegisterForm user={user}/>
+      <h1 className="t-h1 text-ink">A little about your health.</h1>
+      <p className="t-body mt-2.5 text-ink-muted">
+        This is the paperwork you would normally fill in on a clipboard in
+        the waiting room. Doing it now means your appointment starts on time.
+      </p>
 
-      <p className="copyright py-12">  ©2024 CarePulse by Laeeqthedev</p>
-     
+      <div className="mt-8">
+        <RegisterForm user={user} />
       </div>
-   </section>
-    <Image
-    src="/assets/images/register-img.png"
-    height={1000}
-    width={1000}
-    alt="patient"
-    className="side-img max-w-[390px]"
-    />
 
-  </div>
-  )
-}
+      <PrivacyNote />
+    </PatientShell>
+  );
+};
 
-export default Register
+export default Register;

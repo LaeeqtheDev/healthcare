@@ -29,6 +29,7 @@ import SubmitButton from "../../SubmitButton";
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
@@ -43,6 +44,7 @@ const RegisterForm = ({ user }: { user: User }) => {
 
   const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
     setIsLoading(true);
+    setSubmitError(null);
 
     // Store file info in form data as
     let formData;
@@ -61,7 +63,11 @@ const RegisterForm = ({ user }: { user: User }) => {
 
     try {
       const patient = {
-        userID: user.$id,
+        // Appwrite's patient collection declares this attribute as
+        // `userId`. It was being sent as `userID`, so Appwrite rejected
+        // every registration with:
+        //   Invalid document structure: Missing required attribute "userId"
+        userId: user.$id,
         name: values.name,
         email: values.email,
         phone: values.phone,
@@ -85,17 +91,35 @@ const RegisterForm = ({ user }: { user: User }) => {
           : undefined,
         privacyConsent: values.privacyConsent,
       };
-        // @ts-ignore
+      // NOTE: there was a `// @ts-ignore` here. It was suppressing the
+      // exact bug above: RegisterUserParams declares `userId`, so passing
+      // `userID` was a compile error until someone silenced it. Removed
+      // on purpose. If this line ever errors again, fix the shape rather
+      // than muting the compiler.
       const newPatient = await registerPatient(patient);
 
-      if (newPatient) {
-        router.push(`/patients/${user.$id}/new-appointment`);
+      if (!newPatient) {
+        throw new Error(
+          "The practice could not save your details. Please try again."
+        );
       }
-    } catch (error) {
-      console.log(error);
-    }
 
-    setIsLoading(false);
+      router.push(`/patients/${user.$id}/new-appointment`);
+      return;
+    } catch (error) {
+      // Previously this only console.logged, so a failed registration
+      // looked identical to a successful one: the request returned 200,
+      // nothing navigated, and the patient re-submitted repeatedly. That
+      // is exactly the repeated POSTs in the server log.
+      console.error("[register] failed:", error);
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong saving your details. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -104,11 +128,6 @@ const RegisterForm = ({ user }: { user: User }) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex-1 space-y-12"
       >
-        <section className="space-y-4">
-          <h1 className="header">Welcome 👋</h1>
-          <p className="text-dark-700">Let us know more about yourself.</p>
-        </section>
-
         <section className="space-y-6">
           <div className="mb-9 space-y-1">
             <h2 className="sub-header">Personal Information</h2>
@@ -375,6 +394,29 @@ const RegisterForm = ({ user }: { user: User }) => {
             privacy policy"
           />
         </section>
+
+        {submitError && (
+          <div
+            role="alert"
+            aria-live="assertive"
+            className="flex gap-3 rounded-md border border-crit-500/25 bg-crit-50 p-4"
+          >
+            <span
+              aria-hidden
+              className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-crit-500 text-[0.75rem] font-bold text-white"
+            >
+              !
+            </span>
+            <div>
+              <p className="text-[0.875rem] font-semibold text-crit-700">
+                Your details were not saved
+              </p>
+              <p className="mt-1 text-[0.8125rem] leading-relaxed text-crit-700">
+                {submitError}
+              </p>
+            </div>
+          </div>
+        )}
 
         <SubmitButton isLoading={isLoading}>Submit and Continue</SubmitButton>
       </form>

@@ -170,3 +170,24 @@ export const getAppointment = async (appointmentId: string) => {
     );
   }
 };
+
+/**
+ * Every appointment for one patient, newest first.
+ *
+ * This is the visit history. It could not be shown anywhere before,
+ * because nothing queried appointments by patient: the worklist listed
+ * everything by date and there was no per-patient view at all.
+ */
+export const getAppointmentsForPatient = async (patientId: string) => {
+  try {
+    const appointments = await databases.listDocuments(
+      DATABASE_ID!,
+      APPOINTMENT_COLLECTION_ID!,
+      [Query.equal("patient", patientId), Query.orderDesc("schedule"), Query.limit(100)]
+    );
+    return parseStringify(appointments.documents);
+  } catch (error) {
+    console.error("[getAppointmentsForPatient] failed:", error);
+    return [];
+  }
+};

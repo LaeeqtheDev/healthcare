@@ -1,41 +1,45 @@
-import Image from "next/image";
+import type { Metadata } from "next";
 
+import { PatientShell } from "@/components/clinical/PatientShell";
+import { PrivacyNote, Stepper } from "@/components/clinical/Stepper";
+import { AppointmentForm } from "@/components/ui/forms/AppointmentForm";
 import { getPatient } from "@/lib/actions/patient.actions";
-import {AppointmentForm} from "@/components/ui/forms/AppointmentForm";
 
-const Appointment = async ({ params: { userId } }: SearchParamProps) => {
+export const metadata: Metadata = {
+  title: "Choose a time · CarePulse",
+  robots: { index: false, follow: false },
+};
+
+export const dynamic = "force-dynamic";
+
+const Appointment = async ({ params }: { params: { userId: string } }) => {
+  const { userId } = params;
   const patient = await getPatient(userId);
 
   return (
-    <div className="flex h-screen max-h-screen">
-      <section className="remove-scrollbar container my-auto">
-        <div className="sub-container max-w-[860px] flex-1 justify-between">
-          <Image
-            src="/assets/icons/logo-full.svg"
-            height={1000}
-            width={1000}
-            alt="logo"
-            className="mb-12 h-10 w-fit"
-          />
+    <PatientShell
+      aside="/assets/images/appointment-img.png"
+      asideAlt="Clinic corridor"
+      width="max-w-[720px]"
+    >
+      <Stepper current={2} />
 
-          <AppointmentForm
-            patientId={patient?.$id}
-            userId={userId}
-            type="create"
-          />
+      <h1 className="t-h1 text-ink">Pick a physician and a time.</h1>
+      <p className="t-body mt-2.5 text-ink-muted">
+        Your request goes straight to the practice. Someone will confirm it,
+        and you will get a text message either way.
+      </p>
 
-          <p className="copyright mt-10 py-12">© 2024 CarePluse</p>
-        </div>
-      </section>
+      <div className="mt-8">
+        <AppointmentForm
+          patientId={patient?.$id}
+          userId={userId}
+          type="create"
+        />
+      </div>
 
-      <Image
-        src="/assets/images/appointment-img.png"
-        height={1500}
-        width={1500}
-        alt="appointment"
-        className="side-img max-w-[390px] bg-bottom"
-      />
-    </div>
+      <PrivacyNote />
+    </PatientShell>
   );
 };
 

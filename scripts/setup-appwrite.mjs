@@ -5,8 +5,9 @@
  *   1. Creates a Database
  *   2. Creates a "patient" collection with all required attributes
  *   3. Creates an "appointment" collection with all required attributes
- *   4. Creates a Storage bucket for ID document uploads
- *   5. Prints the env vars you need to paste into .env.local
+ *   4. Creates a "clinicalNote" collection (append-only clinical notes)
+ *   5. Creates a Storage bucket for ID document uploads
+ *   6. Prints the env vars you need to paste into .env.local
  *
  * Usage:
  *   1. Create a project at https://cloud.appwrite.io (or self-hosted instance)
@@ -178,6 +179,52 @@ async function main() {
     await sleep(300);
   }
 
+  // ── Clinical notes ────────────────────────────────────────────────
+  // Append-only clinical record. See lib/actions/note.actions.ts for why
+  // there is no update or delete path: a clinical note that can be
+  // silently rewritten after the fact is worthless as evidence.
+  console.log("Creating clinicalNote collection...");
+  const noteCollection = await databases.createCollection(
+    DATABASE_ID,
+    ID.unique(),
+    "clinicalNote",
+    [Permission.read(Role.any()), Permission.write(Role.any())]
+  );
+  const NOTE_COLLECTION_ID = noteCollection.$id;
+
+  const noteAttrs = [
+    ["patientId", 255, true],
+    ["author", 255, true],
+    ["category", 64, true],
+    ["body", 8000, true],
+  ];
+
+  for (const [key, size, required] of noteAttrs) {
+    await databases.createStringAttribute(
+      DATABASE_ID,
+      NOTE_COLLECTION_ID,
+      key,
+      size,
+      required
+    );
+    await sleep(300);
+  }
+
+  // Notes are always queried by patient, so index that field. Without it
+  // the query still works but scans, which gets slow fast.
+  try {
+    await databases.createIndex(
+      DATABASE_ID,
+      NOTE_COLLECTION_ID,
+      "patientId_idx",
+      "key",
+      ["patientId"]
+    );
+    await sleep(300);
+  } catch (err) {
+    console.warn("  (index creation skipped:", err?.message ?? err, ")");
+  }
+
   let BUCKET_ID;
   if (EXISTING_BUCKET_ID) {
     console.log(`Reusing existing bucket ${EXISTING_BUCKET_ID}...`);
@@ -199,8 +246,11 @@ async function main() {
   console.log(`DATABASE_ID=${DATABASE_ID}`);
   console.log(`PATIENT_COLLECTION_ID=${PATIENT_COLLECTION_ID}`);
   console.log(`APPOINTMENT_COLLECTION_ID=${APPOINTMENT_COLLECTION_ID}`);
+  console.log(`NOTE_COLLECTION_ID=${NOTE_COLLECTION_ID}`);
   console.log(`NEXT_PUBLIC_BUCKET_ID=${BUCKET_ID}`);
-  console.log(`NEXT_PUBLIC_ADMIN_PASSKEY=<pick any 6-digit code>`);
+  console.log(`ADMIN_PASSKEY=<pick a long random string>`);
+  console.log(`# NOTE: no NEXT_PUBLIC_ prefix. Anything with that prefix is`);
+  console.log(`# inlined into the browser bundle and is readable by anyone.`);
   console.log(
     "\nNote: DOCTOR_COLLECTION_ID isn't used anywhere in the current code (doctors come from constants/index.ts), so it's left out."
   );

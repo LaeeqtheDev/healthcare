@@ -32,16 +32,28 @@ export const AppointmentModal = ({
       <DialogTrigger asChild>
         <Button
           variant="ghost"
-          className={`capitalize ${type === "schedule" && "text-green-500"}`}
+          size="sm"
+          className={
+            type === "schedule"
+              ? "h-8 rounded-md border border-line-strong bg-surface px-3 text-[0.8125rem] font-semibold text-ink hover:bg-raised"
+              : "h-8 rounded-md px-3 text-[0.8125rem] font-semibold text-crit-500 hover:bg-crit-50"
+          }
+          aria-label={`${type === "schedule" ? "Confirm or reschedule" : "Cancel"} appointment for ${
+            appointment?.patient?.name ?? "this patient"
+          }`}
         >
-          {type}
+          {type === "schedule" ? "Confirm" : "Cancel"}
         </Button>
       </DialogTrigger>
       <DialogContent className="shad-dialog sm:max-w-md">
         <DialogHeader className="mb-4 space-y-3">
-          <DialogTitle className="capitalize">{type} Appointment</DialogTitle>
+          <DialogTitle>
+            {type === "schedule" ? "Confirm appointment" : "Cancel appointment"}
+          </DialogTitle>
           <DialogDescription>
-            Please fill in the following details to {type} appointment
+            {type === "schedule"
+              ? "Confirm the time and add a note for the patient. They will be notified by SMS."
+              : "The patient will be notified by SMS. Give a reason so staff can see why later."}
           </DialogDescription>
         </DialogHeader>
 

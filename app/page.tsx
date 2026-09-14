@@ -1,292 +1,556 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  ArrowRight,
+  BellRing,
+  CalendarCheck2,
+  Check,
+  ClipboardList,
+  Clock3,
+  Lock,
+  Minus,
+  ShieldCheck,
+  Stethoscope,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Doctors } from "@/constants";
-
-const PulseLine = ({ className = "" }: { className?: string }) => (
-  <svg
-    viewBox="0 0 1200 80"
-    preserveAspectRatio="none"
-    className={`h-14 w-full ${className}`}
-    aria-hidden="true"
-  >
-    <path
-      d="M0 40 H420 L455 40 L470 12 L495 68 L515 40 L540 40 L560 20 L580 40 H1200"
-      fill="none"
-      stroke="#24AE7C"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      pathLength="100"
-      className="pulse-draw"
-    />
-  </svg>
-);
+import { PulseMark } from "@/components/clinical/AppHeader";
+import { MapSection } from "@/components/clinical/MapSection";
+import { RevenueCalculator } from "@/components/marketing/RevenueCalculator";
+import { facilities, mapDefaults, providers } from "@/lib/directory";
+import {
+  faqs,
+  hero,
+  jobs,
+  pricing,
+  scope,
+  trustStats,
+  verticals,
+} from "@/lib/marketing";
 
 export default function LandingPage() {
-  const onCall = Doctors.slice(0, 9);
+  const physicians = providers.slice(0, 9);
 
   return (
-    <div className="min-h-screen bg-dark-200">
-      {/* NAV */}
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
-        <Image
-          src="/assets/icons/logo-full.svg"
-          height={28}
-          width={140}
-          alt="CarePulse"
-          className="h-7 w-fit"
-        />
-        <nav className="flex items-center gap-6">
-          <Link
-            href="/admin"
-            className="text-14-medium text-dark-600 transition-colors hover:text-light-200"
-          >
-            Admin
-          </Link>
-          <Button asChild className="shad-primary-btn rounded-full px-6">
-            <Link href="/patients">Book a visit</Link>
-          </Button>
-        </nav>
+    <div className="bg-canvas">
+      {/* ── NAV ──────────────────────────────────────────── */}
+      <header className="sticky top-0 z-[500] border-b border-line bg-surface/95 backdrop-blur">
+        <div className="shell flex h-16 items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="flex size-8 items-center justify-center rounded-md bg-brand-600 text-white">
+              <PulseMark />
+            </span>
+            <span className="text-[1.0625rem] font-bold tracking-[-0.01em] text-ink">
+              CarePulse
+            </span>
+          </div>
+          <nav className="flex items-center gap-1 sm:gap-3">
+            <Link
+              href="/providers"
+              className="rounded-md px-3 py-2 text-[0.875rem] font-semibold text-ink-muted transition-colors hover:text-ink"
+            >
+              Find a doctor
+            </Link>
+            <Link
+              href="/admin"
+              className="hidden rounded-md px-3 py-2 text-[0.875rem] font-semibold text-ink-muted transition-colors hover:text-ink sm:block"
+            >
+              Staff sign in
+            </Link>
+            <Link
+              href="/patients"
+              className="inline-flex h-10 items-center rounded-md bg-brand-600 px-4 text-[0.875rem] font-semibold text-white transition-colors hover:bg-brand-700"
+            >
+              Book a visit
+            </Link>
+          </nav>
+        </div>
       </header>
 
-      {/* HERO */}
-      <section className="mx-auto max-w-6xl px-6 pt-10 md:pt-16">
-        <p className="font-mono text-12-semibold uppercase tracking-[0.2em] text-green-500">
-          Now scheduling · {onCall.length} physicians on call
-        </p>
+      <main id="main">
+        {/* ── HERO ───────────────────────────────────────── */}
+        <section className="relative overflow-hidden border-b border-line bg-surface">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_75%_0%,#EAF2FB,transparent_70%)]"
+          />
+          <div className="shell relative grid gap-12 py-16 lg:grid-cols-12 lg:py-24">
+            <div className="lg:col-span-6">
+              <span className="inline-flex items-center gap-2 rounded-full border border-line bg-raised px-3 py-1.5 text-[0.75rem] font-semibold text-ink-muted">
+                <Stethoscope className="size-3.5" aria-hidden />
+                {hero.eyebrow}
+              </span>
 
-        <h1 className="mt-6 max-w-3xl text-[42px] font-bold leading-[1.05] text-light-200 md:text-[68px]">
-          Every heartbeat of your care,
-          <span className="text-green-500"> on one schedule.</span>
-        </h1>
+              <h1 className="t-display mt-6 text-ink">
+                {hero.headline}
+                <br />
+                <span className="text-brand-600">{hero.headlineAccent}</span>
+              </h1>
 
-        <p className="mt-6 max-w-xl text-16-regular text-dark-700">
-          CarePulse turns appointment booking into a two-minute form and
-          gives your front desk a live pulse on every patient, from first
-          request to confirmed visit.
-        </p>
+              <p className="t-body mt-6 max-w-xl text-ink-muted">{hero.sub}</p>
 
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Button asChild size="lg" className="shad-primary-btn rounded-full px-8">
-            <Link href="/patients">Book an appointment</Link>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="shad-gray-btn rounded-full px-8"
-          >
-            <Link href="/admin">Open admin dashboard</Link>
-          </Button>
-        </div>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/patients"
+                  className="group inline-flex h-12 items-center gap-2 rounded-md bg-brand-600 px-6 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-brand-700"
+                >
+                  {hero.primaryCta}
+                  <ArrowRight
+                    className="size-4 transition-transform group-hover:translate-x-0.5"
+                    aria-hidden
+                  />
+                </Link>
+                <Link
+                  href="/providers"
+                  className="inline-flex h-12 items-center gap-2 rounded-md border border-line-strong bg-surface px-6 text-[0.9375rem] font-semibold text-ink transition-colors hover:bg-raised"
+                >
+                  {hero.secondaryCta}
+                </Link>
+              </div>
 
-        <div className="mt-16">
-          <PulseLine />
-        </div>
-      </section>
+              <p className="mt-5 flex items-center gap-2 text-[0.8125rem] text-ink-subtle">
+                <ShieldCheck className="size-4 shrink-0" aria-hidden />
+                Encrypted in transit and at rest. Staff access is gated and
+                patient records are never public.
+              </p>
+            </div>
 
-      {/* ON-CALL DIRECTORY STRIP */}
-      <section className="border-y border-dark-400 bg-dark-300 py-6">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="scrollbar-hide flex gap-8 overflow-x-auto">
-            {onCall.map((doctor) => (
-              <div
-                key={doctor.name}
-                className="flex shrink-0 items-center gap-3"
-              >
-                <Image
-                  src={doctor.image}
-                  height={36}
-                  width={36}
-                  alt={doctor.name}
-                  className="size-9 rounded-full border border-dark-500 object-cover"
-                />
-                <div className="whitespace-nowrap">
-                  <p className="text-14-medium text-light-200">
-                    Dr. {doctor.name}
-                  </p>
-                  <p className="font-mono text-[11px] uppercase tracking-wide text-green-500">
-                    on call
-                  </p>
-                </div>
+            {/* Product screenshot, not stock photography. Buyers of
+                clinical software want the screen they will stare at. */}
+            <div className="lg:col-span-6">
+              <WorklistPreview />
+            </div>
+          </div>
+        </section>
+
+        {/* ── TRUST STRIP ────────────────────────────────── */}
+        <section className="border-b border-line bg-raised/40">
+          <dl className="shell grid grid-cols-2 gap-x-6 gap-y-8 py-10 lg:grid-cols-4">
+            {trustStats.map((s) => (
+              <div key={s.label}>
+                <dt className="text-[1.75rem] font-bold leading-none tracking-[-0.02em] text-brand-600">
+                  {s.value}
+                </dt>
+                <dd className="mt-2.5 max-w-[190px] text-[0.8125rem] leading-snug text-ink-muted">
+                  {s.label}
+                </dd>
               </div>
             ))}
+          </dl>
+        </section>
+
+        {/* ── REVENUE CALCULATOR ─────────────────────────── */}
+        <section className="shell py-16 sm:py-20">
+          <div className="mb-8 max-w-2xl">
+            <h2 className="t-h1 text-ink">
+              Every empty chair was already paid for.
+            </h2>
+            <p className="t-body mt-3 text-ink-muted">
+              The staff were rostered, the room was booked, the slot was
+              blocked. Move the sliders to your own practice and see what a
+              year of it adds up to.
+            </p>
           </div>
-        </div>
-      </section>
+          <RevenueCalculator />
+        </section>
 
-      {/* JOURNEY / FEATURES */}
-      <section className="mx-auto max-w-6xl px-6 py-24">
-        <h2 className="max-w-md text-32-bold text-light-200">
-          From request to record, three steps.
-        </h2>
+        {/* ── BEFORE / AFTER ─────────────────────────────── */}
+        <section className="shell py-16 sm:py-24">
+          <h2 className="t-h1 max-w-2xl text-ink">
+            Three jobs your front desk currently does by hand.
+          </h2>
+          <p className="t-body mt-4 max-w-xl text-ink-muted">
+            None of them need a person. All of them cost you one.
+          </p>
 
-        <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-dark-500 md:grid-cols-3">
-          <JourneyStep
-            index="01"
-            title="Book"
-            description="Pick a physician, a time, and a reason. Confirmed in seconds, no phone queue."
-          />
-          <JourneyStep
-            index="02"
-            title="Track"
-            description="Your team sees every request land on a live dashboard the moment it's submitted."
-          />
-          <JourneyStep
-            index="03"
-            title="Record"
-            description="Once confirmed, history, documents, and notes stay attached to the visit for good."
-          />
-        </div>
-      </section>
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {jobs.map((j, i) => (
+              <article key={j.title} className="card flex h-full flex-col p-6">
+                <span className="t-label text-ink-subtle">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="t-h3 mb-5 mt-2 text-ink">{j.title}</h3>
 
-      {/* TRUST / STATS */}
-      <section className="border-y border-dark-400 bg-dark-300">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-16 md:grid-cols-4">
-          <Stat value="9" label="Physicians on the platform" />
-          <Stat value="< 2 min" label="Average booking time" />
-          <Stat value="24/7" label="Patients can request a visit" />
-          <Stat value="0" label="Phone transfers required" />
-        </div>
-      </section>
+                <div className="mb-4 flex flex-1 flex-col rounded-md border border-line bg-raised/60 p-4">
+                  <p className="t-label mb-2 text-ink-subtle">Today</p>
+                  <p className="text-[0.875rem] leading-relaxed text-ink-muted">
+                    {j.before}
+                  </p>
+                </div>
 
-      {/* TESTIMONIALS */}
-      <section className="mx-auto max-w-6xl px-6 py-24">
-        <h2 className="max-w-md text-32-bold text-light-200">
-          What the front desk stopped doing.
-        </h2>
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <Testimonial
-            quote="We used to keep a paper log by the phone. Now every request just shows up on the dashboard, already sorted by status."
-            name="Front desk lead"
-            role="Family medicine clinic"
-          />
-          <Testimonial
-            quote="Patients fill in their own history before they arrive, so the first five minutes of the visit aren't spent on a clipboard."
-            name="Practice manager"
-            role="Multi-physician practice"
-          />
-          <Testimonial
-            quote="Cancelling and rescheduling used to mean three phone calls. Now it's two clicks and the patient gets a text."
-            name="Office coordinator"
-            role="Urgent care clinic"
-          />
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="border-t border-dark-400 bg-dark-300">
-        <div className="mx-auto max-w-3xl px-6 py-24">
-          <h2 className="mb-10 text-32-bold text-light-200">Questions, answered.</h2>
-          <div className="divide-y divide-dark-500">
-            <FaqItem
-              question="Do patients need to create an account?"
-              answer="No password to remember. A patient enters their name, email, and phone once, and that identity carries through to booking and any future visits."
-            />
-            <FaqItem
-              question="How does the admin dashboard know about a new request?"
-              answer="The moment a patient submits the form, it appears on the dashboard as pending, alongside live counts of scheduled and cancelled appointments."
-            />
-            <FaqItem
-              question="Can a visit be rescheduled or cancelled after booking?"
-              answer="Yes. From the admin dashboard, a staff member can confirm, reschedule, or cancel any appointment, and the patient is notified automatically."
-            />
-            <FaqItem
-              question="Where are identification documents stored?"
-              answer="Uploaded ID documents are stored in encrypted cloud storage and linked only to that patient's record, never made public."
-            />
+                <div className="rounded-md border border-brand-500/25 bg-brand-50 p-4">
+                  <p className="t-label mb-2 text-brand-700">With CarePulse</p>
+                  <p className="text-[0.875rem] leading-relaxed text-ink">
+                    {j.after}
+                  </p>
+                </div>
+              </article>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="border-t border-dark-400 bg-dark-300">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <div className="mb-10">
-            <PulseLine />
-          </div>
-          <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-            <div>
-              <h2 className="max-w-sm text-32-bold text-light-200">
-                Your first appointment is two minutes away.
-              </h2>
+        {/* ── MAP ────────────────────────────────────────── */}
+        <section className="border-y border-line bg-surface py-16 sm:py-20">
+          <div className="shell">
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="t-h1 max-w-xl text-ink">
+                  Patients find you before they book you.
+                </h2>
+                <p className="t-body mt-3 max-w-xl text-ink-muted">
+                  Every site gets a map pin, opening hours and a phone
+                  number. Patients can also search hospitals and clinics
+                  near them, so the practice page is useful even to someone
+                  who is not your patient yet.
+                </p>
+              </div>
+              <Link
+                href="/providers"
+                className="group inline-flex items-center gap-2 text-[0.875rem] font-semibold text-brand-600"
+              >
+                See the full directory
+                <ArrowRight
+                  className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden
+                />
+              </Link>
             </div>
-            <Button asChild size="lg" className="shad-primary-btn shrink-0 rounded-full px-8">
-              <Link href="/patients">Get started</Link>
-            </Button>
+
+            <MapSection
+              facilities={facilities}
+              center={{ lat: mapDefaults.lat, lng: mapDefaults.lng }}
+              zoom={mapDefaults.zoom}
+            />
+          </div>
+        </section>
+
+        {/* ── VERTICALS ──────────────────────────────────── */}
+        <section className="shell py-16 sm:py-24">
+          <h2 className="t-h1 max-w-2xl text-ink">
+            One platform. Configured for your kind of practice.
+          </h2>
+          <p className="t-body mt-4 max-w-xl text-ink-muted">
+            Appointment types, intake forms and reminder timing arrive set up
+            for your specialty, instead of a blank system you have to
+            configure before it is useful.
+          </p>
+
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {verticals.map((v) => (
+              <article key={v.name} className="card flex h-full flex-col p-6">
+                <h3 className="t-h3 text-ink">{v.name}</h3>
+                <p className="mt-3 flex-1 text-[0.875rem] leading-relaxed text-ink-muted">
+                  {v.blurb}
+                </p>
+                <ul className="mt-auto space-y-2 border-t border-line pt-5">
+                  {v.points.map((p) => (
+                    <li
+                      key={p}
+                      className="flex gap-2.5 text-[0.8125rem] text-ink-muted"
+                    >
+                      <Check className="mt-0.5 size-3.5 shrink-0 text-ok-500" aria-hidden />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ── PHYSICIANS ─────────────────────────────────── */}
+        <section className="border-y border-line bg-surface py-14">
+          <div className="shell">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <p className="t-label text-ink-subtle">
+                Physicians configured on this practice
+              </p>
+              <Link
+                href="/providers"
+                className="group inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-brand-600"
+              >
+                Specialties, sites and availability
+                <ArrowRight
+                  className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden
+                />
+              </Link>
+            </div>
+            <div className="scrollbar-hide flex gap-7 overflow-x-auto pb-1">
+              {physicians.map((doctor) => (
+                <div key={doctor.id} className="flex shrink-0 items-center gap-3">
+                  <Image
+                    src={doctor.image}
+                    height={40}
+                    width={40}
+                    alt=""
+                    className="size-10 rounded-full border border-line object-cover"
+                  />
+                  <div className="whitespace-nowrap">
+                    <p className="text-[0.875rem] font-medium text-ink">
+                      Dr. {doctor.name}
+                    </p>
+                    <p className="text-[0.75rem] text-ink-subtle">
+                      {doctor.specialty}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── SCOPE ──────────────────────────────────────── */}
+        <section className="shell py-16 sm:py-24">
+          <div className="grid gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <h2 className="t-h1 text-ink">
+                What it does, and what it does not.
+              </h2>
+              <p className="t-body mt-4 text-ink-muted">
+                Scheduling software gets oversold constantly. Here is the
+                boundary in writing, so nobody finds it during onboarding.
+              </p>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:col-span-7">
+              <div className="card p-6">
+                <p className="t-label mb-4 text-ok-700">It does</p>
+                <ul className="space-y-2.5">
+                  {scope.does.map((i) => (
+                    <li key={i} className="flex gap-2.5 text-[0.875rem] text-ink-muted">
+                      <Check className="mt-0.5 size-3.5 shrink-0 text-ok-500" aria-hidden />
+                      {i}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="card p-6">
+                <p className="t-label mb-4 text-ink-subtle">It does not</p>
+                <ul className="space-y-2.5">
+                  {scope.doesNot.map((i) => (
+                    <li key={i} className="flex gap-2.5 text-[0.875rem] text-ink-muted">
+                      <Minus className="mt-0.5 size-3.5 shrink-0 text-ink-subtle" aria-hidden />
+                      {i}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── PRICING ────────────────────────────────────── */}
+        <section className="border-t border-line bg-raised/30 py-16 sm:py-24">
+          <div className="shell">
+            <div className="max-w-2xl">
+              <h2 className="t-h1 text-ink">Priced per location, published.</h2>
+              <p className="t-body mt-3 text-ink-muted">{pricing.note}</p>
+            </div>
+
+            <div className="mt-12 grid gap-5 lg:grid-cols-3">
+              {pricing.plans.map((plan) => (
+                <article
+                  key={plan.name}
+                  className={`flex h-full flex-col rounded-lg border bg-surface p-6 ${
+                    plan.featured
+                      ? "border-brand-500 shadow-raised ring-1 ring-brand-500/20"
+                      : "border-line shadow-card"
+                  }`}
+                >
+                  {plan.featured && (
+                    <span className="mb-4 self-start rounded-full bg-brand-600 px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-white">
+                      Most practices
+                    </span>
+                  )}
+
+                  <h3 className="t-h3 text-ink">{plan.name}</h3>
+                  <p className="t-small mt-1 text-ink-subtle">{plan.forWho}</p>
+
+                  <p className="mt-5 flex items-baseline gap-2">
+                    <span className="text-[2rem] font-bold leading-none tracking-[-0.02em] text-ink">
+                      {plan.price}
+                    </span>
+                    <span className="t-small text-ink-subtle">
+                      {plan.cadence}
+                    </span>
+                  </p>
+
+                  <ul className="mt-6 flex-1 space-y-2.5 border-t border-line pt-5">
+                    {plan.features.map((f) => (
+                      <li
+                        key={f}
+                        className="flex gap-2.5 text-[0.875rem] text-ink-muted"
+                      >
+                        <Check
+                          className="mt-0.5 size-3.5 shrink-0 text-ok-500"
+                          aria-hidden
+                        />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href="/patients"
+                    className={`mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-md text-[0.875rem] font-semibold transition-colors ${
+                      plan.featured
+                        ? "bg-brand-600 text-white hover:bg-brand-700"
+                        : "border border-line-strong bg-surface text-ink hover:bg-raised"
+                    }`}
+                  >
+                    {plan.cta}
+                  </Link>
+                </article>
+              ))}
+            </div>
+
+            <p className="mt-6 t-small text-ink-subtle">
+              Prices shown in USD. Local currency billing available for the
+              markets we operate in.
+            </p>
+          </div>
+        </section>
+
+        {/* ── FAQ ────────────────────────────────────────── */}
+        <section className="border-t border-line bg-surface">
+          <div className="shell max-w-3xl py-16 sm:py-24">
+            <h2 className="t-h1 mb-8 text-ink">Questions, answered.</h2>
+            <div className="divide-y divide-line border-y border-line">
+              {faqs.map((f) => (
+                <details key={f.q} className="group py-5">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[0.9375rem] font-semibold text-ink">
+                    {f.q}
+                    <span
+                      className="flex size-6 shrink-0 items-center justify-center rounded-full border border-line text-ink-subtle transition-transform group-open:rotate-45"
+                      aria-hidden
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-3 max-w-2xl text-[0.875rem] leading-relaxed text-ink-muted">
+                    {f.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── CTA ────────────────────────────────────────── */}
+        <section className="border-t border-line bg-brand-700">
+          <div className="shell flex flex-col items-start justify-between gap-6 py-16 md:flex-row md:items-center">
+            <div>
+              <h2 className="t-h1 max-w-lg text-white">
+                See it working before you decide anything.
+              </h2>
+              <p className="t-body mt-3 max-w-md text-brand-100">
+                Walk through a real booking as a patient, then look at the
+                staff worklist it lands on. Two minutes, no signup.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/patients"
+                className="group inline-flex h-12 shrink-0 items-center gap-2 rounded-md bg-white px-6 text-[0.9375rem] font-semibold text-brand-700 transition-colors hover:bg-brand-50"
+              >
+                Try the patient flow
+                <ArrowRight
+                  className="size-4 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden
+                />
+              </Link>
+              <Link
+                href="/admin"
+                className="inline-flex h-12 shrink-0 items-center gap-2 rounded-md border border-white/30 px-6 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                <Lock className="size-4" aria-hidden />
+                Staff sign in
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-t border-line">
+        <div className="shell flex flex-wrap items-center justify-between gap-3 py-8">
+          <p className="copyright">© {new Date().getFullYear()} CarePulse</p>
+          <div className="flex gap-6">
+            <Link href="/providers" className="text-[0.8125rem] text-ink-subtle hover:text-ink">
+              Find a doctor
+            </Link>
+            <Link href="/admin" className="text-[0.8125rem] text-ink-subtle hover:text-ink">
+              Staff sign in
+            </Link>
           </div>
         </div>
-      </section>
-
-      <footer className="mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
-        <p className="text-14-regular text-dark-600">
-          © {new Date().getFullYear()} CarePulse
-        </p>
-        <Link href="/admin" className="text-14-regular text-dark-600 hover:text-light-200">
-          Admin
-        </Link>
       </footer>
     </div>
   );
 }
 
-const JourneyStep = ({
-  index,
-  title,
-  description,
-}: {
-  index: string;
-  title: string;
-  description: string;
-}) => (
-  <div className="flex flex-col gap-4 bg-dark-300 p-8">
-    <span className="font-mono text-14-medium text-green-500">{index}</span>
-    <h3 className="text-24-bold text-light-200">{title}</h3>
-    <p className="text-14-regular text-dark-700">{description}</p>
-  </div>
-);
+/**
+ * Hero product preview.
+ *
+ * A real fragment of the worklist rather than a stock photo. Practice
+ * managers buy the screen they will be looking at all day, and every
+ * competitor's hero is the same photograph of a clinician holding a
+ * tablet.
+ */
+function WorklistPreview() {
+  const rows = [
+    { n: "A. Whitfield", d: "Cameron", t: "9:00 AM", s: "pending" },
+    { n: "M. Okonkwo", d: "Livingston", t: "9:30 AM", s: "scheduled" },
+    { n: "R. Delgado", d: "Sharma", t: "10:15 AM", s: "pending" },
+    { n: "S. Ahmed", d: "Green", t: "11:00 AM", s: "scheduled" },
+    { n: "T. Bakker", d: "Lee", t: "11:45 AM", s: "scheduled" },
+  ];
 
-const Stat = ({ value, label }: { value: string; label: string }) => (
-  <div>
-    <p className="font-mono text-32-bold text-green-500">{value}</p>
-    <p className="mt-2 text-14-regular text-dark-700">{label}</p>
-  </div>
-);
+  return (
+    <div className="card overflow-hidden shadow-raised">
+      <div className="flex items-center gap-2 border-b border-line bg-raised px-4 py-3">
+        <ClipboardList className="size-4 text-ink-subtle" aria-hidden />
+        <span className="text-[0.8125rem] font-semibold text-ink">
+          Today&apos;s worklist
+        </span>
+        <span className="ml-auto rounded-full bg-warn-50 px-2 py-0.5 text-[0.6875rem] font-bold text-warn-700">
+          2 pending
+        </span>
+      </div>
 
-const Testimonial = ({
-  quote,
-  name,
-  role,
-}: {
-  quote: string;
-  name: string;
-  role: string;
-}) => (
-  <div className="flex h-full flex-col justify-between gap-8 rounded-2xl bg-dark-400 p-8">
-    <p className="text-16-regular text-light-200">“{quote}”</p>
-    <div>
-      <p className="text-14-medium text-light-200">{name}</p>
-      <p className="text-14-regular text-dark-600">{role}</p>
+      <ul className="divide-y divide-line">
+        {rows.map((row) => (
+          <li
+            key={row.n}
+            className="flex items-center justify-between gap-3 px-4 py-3.5"
+          >
+            <div className="min-w-0">
+              <p className="truncate text-[0.875rem] font-semibold text-ink">
+                {row.n}
+              </p>
+              <p className="truncate text-[0.75rem] text-ink-subtle">
+                Dr. {row.d}
+                <span className="mx-1.5">·</span>
+                <Clock3 className="inline size-3 -translate-y-px" aria-hidden />{" "}
+                {row.t}
+              </p>
+            </div>
+            <span
+              className={`pill ${row.s === "pending" ? "pill-warn" : "pill-ok"}`}
+            >
+              {row.s === "pending" ? (
+                <BellRing className="size-3" aria-hidden />
+              ) : (
+                <CalendarCheck2 className="size-3" aria-hidden />
+              )}
+              {row.s}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <p className="border-t border-line bg-raised px-4 py-2.5 text-[0.6875rem] text-ink-subtle">
+        Illustrative worklist. Names are examples, not real patients.
+      </p>
     </div>
-  </div>
-);
-
-const FaqItem = ({
-  question,
-  answer,
-}: {
-  question: string;
-  answer: string;
-}) => (
-  <details className="group py-6">
-    <summary className="flex cursor-pointer list-none items-center justify-between text-16-semibold text-light-200">
-      {question}
-      <span className="ml-4 shrink-0 text-green-500 transition-transform group-open:rotate-45">
-        +
-      </span>
-    </summary>
-    <p className="mt-3 text-14-regular text-dark-700">{answer}</p>
-  </details>
-);
+  );
+}

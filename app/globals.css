@@ -1,378 +1,382 @@
+/* Leaflet core stylesheet. Without it the tile layer stacks incorrectly
+   and every control renders unpositioned in the top-left corner. Imported
+   before Tailwind so utility classes can still override it. */
+@import "leaflet/dist/leaflet.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ========================================== TAILWIND STYLES */
+/* ==========================================================================
+   CarePulse base
+   ========================================================================== */
 @layer base {
-  /* Remove scrollbar */
-  .remove-scrollbar::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
-    border-radius: 0px;
+  html {
+    -webkit-text-size-adjust: 100%;
   }
 
-  .remove-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  body {
+    @apply bg-canvas text-ink antialiased;
+    /* Tabular figures everywhere. In a clinical table, times and counts
+       that shift width as they change are genuinely harder to scan. */
+    font-variant-numeric: tabular-nums;
   }
 
-  .remove-scrollbar::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 0px;
+  /* A visible, consistent focus ring. The original config disabled focus
+     rings on inputs and dialogs via focus-visible:ring-0, which makes the
+     whole application unusable by keyboard. Restored deliberately. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-canvas;
+    border-radius: 4px;
   }
 
-  .remove-scrollbar::-webkit-scrollbar-thumb:hover {
-    /* background: #1e2238; */
-    background: transparent;
+  ::selection {
+    background: #d2e3f6;
+    color: #0e1a26;
   }
-}
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.pulse-draw {
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation: draw-pulse 2.4s ease-out forwards;
-}
-
-@keyframes draw-pulse {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pulse-draw {
-    animation: none;
-    stroke-dashoffset: 0;
+  /* Honour the OS setting rather than animating regardless. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
 @layer utilities {
-  /* ===== UTILITIES */
-  .sidebar {
-    @apply remove-scrollbar w-full max-w-72 flex-col overflow-auto bg-black-800 px-7 py-10;
+  /* ===== Layout =============================================== */
+  .shell {
+    @apply mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8;
   }
 
-  .left-sidebar {
-    @apply hidden lg:flex;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
-  .right-sidebar {
-    @apply hidden xl:flex;
+  /* Skip link, revealed on focus. */
+  .skip-link {
+    @apply absolute left-4 top-4 z-50 -translate-y-24 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-transform focus:translate-y-0;
   }
 
-  .clip-text {
-    @apply bg-clip-text text-transparent;
+  /* ===== Type scale =========================================== */
+  .t-display {
+    @apply text-[clamp(2rem,4.6vw,3.25rem)] font-bold leading-[1.08] tracking-[-0.02em];
+  }
+  .t-h1 {
+    @apply text-[clamp(1.5rem,3vw,2rem)] font-bold leading-[1.15] tracking-[-0.015em];
+  }
+  .t-h2 {
+    @apply text-[clamp(1.25rem,2.2vw,1.5rem)] font-semibold leading-[1.25] tracking-[-0.01em];
+  }
+  .t-h3 {
+    @apply text-[1.0625rem] font-semibold leading-[1.35];
+  }
+  .t-body {
+    @apply text-[0.9375rem] leading-[1.6];
+  }
+  .t-small {
+    @apply text-[0.8125rem] leading-[1.5];
+  }
+  .t-label {
+    @apply text-[0.6875rem] font-semibold uppercase tracking-[0.08em];
   }
 
-  .bg-image {
-    @apply bg-black-900 bg-light-rays bg-cover bg-no-repeat;
+  /* ===== Surfaces ============================================= */
+  .card {
+    @apply rounded-lg border border-line bg-surface shadow-card;
   }
 
-  .header {
-    @apply text-32-bold md:text-36-bold;
+  .panel-header {
+    @apply flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4;
   }
 
-  .sub-header {
-    @apply text-18-bold md:text-24-bold;
+  /* ===== Status pills =========================================
+     Colour is never the only signal: each pill also carries an icon and
+     its own text label. */
+  .pill {
+    @apply inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-1 text-[0.75rem] font-semibold capitalize;
+  }
+  .pill-ok {
+    @apply border-ok-500/25 bg-ok-50 text-ok-700;
+  }
+  .pill-warn {
+    @apply border-warn-500/25 bg-warn-50 text-warn-700;
+  }
+  .pill-crit {
+    @apply border-crit-500/25 bg-crit-50 text-crit-700;
+  }
+  .pill-info {
+    @apply border-info-500/25 bg-info-50 text-info-700;
   }
 
-  .container {
-    @apply relative flex-1 overflow-y-auto px-[5%];
+  /* ===== Tables =============================================== */
+  .clin-table {
+    @apply w-full border-collapse text-left;
+  }
+  .clin-table thead th {
+    @apply border-b border-line bg-raised px-4 py-3 text-[0.6875rem] font-semibold uppercase tracking-[0.07em] text-ink-subtle;
+  }
+  .clin-table tbody td {
+    @apply border-b border-line px-4 py-3.5 align-middle text-[0.875rem] text-ink;
+  }
+  .clin-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .clin-table tbody tr:hover {
+    @apply bg-brand-50/60;
   }
 
+  /* ===== Loading ============================================== */
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-raised;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0 -translate-x-full;
+    background-image: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.65) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: shimmer 1.6s infinite;
+  }
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* ===== Legacy type aliases ==================================
+     The original codebase scattered .text-14-medium style classes through
+     every form. Rather than touch 900 lines of field markup, these now
+     map onto the new scale so the forms inherit the theme. New code
+     should use the .t-* classes above. */
+  .text-36-bold { @apply text-[2rem] font-bold leading-[1.15] tracking-[-0.015em]; }
+  .text-32-bold { @apply text-[1.75rem] font-bold leading-[1.2] tracking-[-0.015em]; }
+  .text-24-bold { @apply text-[1.3125rem] font-semibold leading-[1.3]; }
+  .text-18-bold { @apply text-[1.0625rem] font-semibold leading-[1.35]; }
+  .text-16-semibold { @apply text-[0.9375rem] font-semibold leading-[1.45]; }
+  .text-16-regular { @apply text-[0.9375rem] font-normal leading-[1.6]; }
+  .text-14-medium { @apply text-[0.875rem] font-medium leading-[1.45]; }
+  .text-14-regular { @apply text-[0.875rem] font-normal leading-[1.55]; }
+  .text-12-regular { @apply text-[0.75rem] font-normal leading-[1.45]; }
+  .text-12-semibold { @apply text-[0.75rem] font-semibold leading-[1.45]; }
+
+  .header { @apply t-h1; }
+  .sub-header { @apply t-h2; }
+  .remove-scrollbar { @apply scrollbar-hide; }
+
+  /* `.container` is a Tailwind core class. The original stylesheet
+     redefined it here, which silently broke every use of Tailwind's own
+     container. Renamed to .form-pane; the old name is left alone. */
+  .form-pane {
+    @apply relative flex-1 overflow-y-auto px-4 sm:px-8;
+  }
   .sub-container {
-    @apply mx-auto flex size-full flex-col py-10;
+    @apply mx-auto flex w-full flex-col py-8 sm:py-10;
   }
-
   .side-img {
-    @apply hidden h-full object-cover md:block;
+    @apply hidden h-full object-cover lg:block;
   }
-
   .copyright {
-    @apply text-14-regular justify-items-end text-center text-dark-600 xl:text-left;
+    @apply text-[0.8125rem] text-ink-subtle;
   }
 
-  /* ==== SUCCESS */
-  .success-img {
-    @apply m-auto flex flex-1 flex-col items-center justify-between gap-10 py-10;
-  }
-
-  .request-details {
-    @apply flex w-full flex-col items-center gap-8 border-y-2 border-dark-400 py-8 md:w-fit md:flex-row;
-  }
-
-  /* ===== ADMIN */
-  .admin-header {
-    @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-dark-200 px-[5%] py-5 shadow-lg xl:px-12;
-  }
-
-  .admin-main {
-    @apply flex flex-col items-center space-y-6 px-[5%] pb-12 xl:space-y-12 xl:px-12;
-  }
-
-  .admin-stat {
-    @apply flex w-full flex-col justify-between gap-5 sm:flex-row xl:gap-10;
-  }
-
-  /* ==== FORM */
+  /* ===== Forms ================================================ */
   .radio-group {
-    @apply flex h-full flex-1 items-center gap-2 rounded-md border border-dashed border-dark-500 bg-dark-400 p-3;
+    @apply flex h-full flex-1 items-center gap-2 rounded-md border border-line bg-surface p-3 transition-colors hover:border-brand-500;
   }
-
   .checkbox-label {
-    @apply cursor-pointer text-sm font-medium text-dark-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
+    @apply cursor-pointer text-sm font-medium text-ink-muted peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
   }
-
-  /* ==== File Upload */
   .file-upload {
-    @apply text-12-regular flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dark-500 bg-dark-400 p-5;
+    @apply flex cursor-pointer flex-col items-center justify-center gap-3 rounded-md border border-dashed border-line-strong bg-raised/60 p-6 text-[0.75rem] transition-colors hover:border-brand-500 hover:bg-brand-50;
   }
-
   .file-upload_label {
-    @apply flex flex-col justify-center gap-2 text-center text-dark-600;
+    @apply flex flex-col justify-center gap-1 text-center text-ink-subtle;
   }
 
-  /* ==== Stat Card */
-  .stat-card {
-    @apply flex flex-1 flex-col gap-6 rounded-2xl bg-cover p-6 shadow-lg;
-  }
-
-  /* ==== Status Badge */
-  .status-badge {
-    @apply flex w-fit items-center gap-2 rounded-full px-4 py-2;
-  }
-
-  /* Data Table */
-  .data-table {
-    @apply z-10 w-full overflow-hidden rounded-lg border border-dark-400 shadow-lg;
-  }
-
-  .table-actions {
-    @apply flex w-full items-center justify-between space-x-2 p-4;
-  }
-
-  /* ===== ALIGNMENTS */
-  .flex-center {
-    @apply flex items-center justify-center;
-  }
-
-  .flex-between {
-    @apply flex items-center justify-between;
-  }
-
-  /* ===== TYPOGRAPHY */
-  .text-36-bold {
-    @apply text-[36px] leading-[40px] font-bold;
-  }
-
-  .text-24-bold {
-    @apply text-[24px] leading-[28px] font-bold;
-  }
-
-  .text-32-bold {
-    @apply text-[32px] leading-[36px] font-bold;
-  }
-
-  .text-18-bold {
-    @apply text-[18px] leading-[24px] font-bold;
-  }
-
-  .text-16-semibold {
-    @apply text-[16px] leading-[20px] font-semibold;
-  }
-
-  .text-16-regular {
-    @apply text-[16px] leading-[20px] font-normal;
-  }
-
-  .text-14-medium {
-    @apply text-[14px] leading-[18px] font-medium;
-  }
-
-  .text-14-regular {
-    @apply text-[14px] leading-[18px] font-normal;
-  }
-
-  .text-12-regular {
-    @apply text-[12px] leading-[16px] font-normal;
-  }
-
-  .text-12-semibold {
-    @apply text-[12px] leading-[16px] font-semibold;
-  }
-
-  /* =====  SHADCN OVERRIDES */
+  /* ===== shadcn overrides ===================================== */
   .shad-primary-btn {
-    @apply bg-green-500 text-white !important;
+    @apply bg-brand-600 font-semibold text-white hover:bg-brand-700 !important;
   }
-
   .shad-danger-btn {
-    @apply bg-red-700 text-white !important;
+    @apply bg-crit-500 font-semibold text-white hover:bg-crit-700 !important;
   }
-
   .shad-gray-btn {
-    @apply border border-dark-500 cursor-pointer bg-dark-400 text-white !important;
+    @apply border border-line-strong bg-surface font-semibold text-ink hover:bg-raised !important;
   }
-
   .shad-input-label {
-    @apply text-14-medium text-dark-700 !important;
+    @apply text-[0.8125rem] font-semibold text-ink !important;
   }
-
-  .shad-input {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
-  }
-
-  .shad-input-icon {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
-  }
-
-  .shad-textArea {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
-  }
-
-  .shad-combobox-item {
-    @apply data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 !important;
-  }
-
-  .shad-combobox-trigger {
-    @apply h-11 !important;
-  }
-
+  .shad-input,
+  .shad-input-icon,
+  .shad-textArea,
   .shad-select-trigger {
-    @apply bg-dark-400  placeholder:text-dark-600 border-dark-500 h-11 focus:ring-0 focus:ring-offset-0 !important;
+    @apply h-11 border-line-strong bg-surface text-ink placeholder:text-ink-subtle/70 !important;
   }
-
+  .shad-textArea {
+    @apply h-auto min-h-[88px] !important;
+  }
   .shad-select-content {
-    @apply bg-dark-400 border-dark-500 !important;
+    @apply border-line bg-surface text-ink !important;
   }
-
   .shad-dialog {
-    @apply bg-dark-400 border-dark-500 !important;
+    @apply border-line bg-surface !important;
   }
-
-  .shad-dialog button {
-    @apply focus:ring-0 focus:ring-offset-0 focus-visible:border-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
-  }
-
   .shad-error {
-    @apply text-red-400 !important;
+    @apply text-[0.8125rem] font-medium text-crit-500 !important;
   }
-
-  .shad-table {
-    @apply rounded-lg overflow-hidden !important;
-  }
-
   .shad-table-row-header {
-    @apply border-b border-dark-400 text-light-200 hover:bg-transparent !important;
+    @apply border-b border-line bg-raised !important;
   }
-
   .shad-table-row {
-    @apply border-b border-dark-400 text-light-200 !important;
+    @apply border-b border-line !important;
   }
-
-  .shad-otp {
-    @apply w-full flex justify-between !important;
-  }
-
-  .shad-otp-slot {
-    @apply text-36-bold justify-center flex border border-dark-500 rounded-lg size-16 gap-4 !important;
-  }
-
   .shad-alert-dialog {
-    @apply space-y-5 bg-dark-400 border-dark-500 outline-none !important;
+    @apply space-y-5 border-line bg-surface !important;
   }
-
-  .shad-sheet-content button {
-    @apply top-2 focus:ring-0 focus:ring-offset-0 focus-visible:border-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
-  }
-
-  /* =====  REACT PHONE NUMBER INPUT OVERRIDES */
   .input-phone {
-    @apply mt-2 h-11 rounded-md px-3 text-sm border bg-dark-400 placeholder:text-dark-600 border-dark-500 !important;
+    @apply mt-2 h-11 rounded-md border border-line-strong bg-surface px-3 text-sm text-ink !important;
   }
-
-  /* =====  REACT DATE PICKER OVERRIDES */
   .date-picker {
-    @apply overflow-hidden border-transparent w-full placeholder:text-dark-600  h-11 text-14-medium rounded-md px-3 outline-none !important;
+    @apply h-11 w-full rounded-md px-3 text-sm outline-none !important;
   }
 }
 
-/* =====  REACT-DATEPICKER OVERRIDES */
+/* ==========================================================================
+   Third-party overrides
+   ========================================================================== */
+
+/* ----- react-datepicker ----- */
 .react-datepicker-wrapper.date-picker {
   display: flex;
   align-items: center;
 }
 
-.react-datepicker,
-.react-datepicker__time,
+.react-datepicker {
+  border-color: #dce4ed !important;
+  background-color: #ffffff !important;
+  font-family: inherit !important;
+  box-shadow: 0 16px 40px -12px rgba(14, 26, 38, 0.22);
+}
+
 .react-datepicker__header,
-.react-datepicker__current-month,
-.react-datepicker__day-name,
-.react-datepicker__day,
-.react-datepicker-time__header {
-  background-color: #1a1d21 !important;
-  border-color: #363a3d !important;
-  color: #abb8c4 !important;
+.react-datepicker__time,
+.react-datepicker__time-container {
+  background-color: #ffffff !important;
+  border-color: #dce4ed !important;
 }
 
 .react-datepicker__current-month,
 .react-datepicker__day-name,
 .react-datepicker-time__header {
-  color: #ffffff !important;
+  color: #0e1a26 !important;
+  font-weight: 600;
+}
+
+.react-datepicker__day {
+  color: #0e1a26 !important;
+  border-radius: 6px;
+}
+
+.react-datepicker__day:hover {
+  background-color: #eaf2fb !important;
+}
+
+.react-datepicker__day--disabled {
+  color: #9aa9b8 !important;
 }
 
 .react-datepicker__triangle {
-  fill: #1a1d21 !important;
-  color: #1a1d21 !important;
-  stroke: #1a1d21 !important;
+  fill: #ffffff !important;
+  color: #ffffff !important;
+  stroke: #dce4ed !important;
 }
 
 .react-datepicker__time-list-item:hover {
-  background-color: #363a3d !important;
+  background-color: #eaf2fb !important;
 }
 
 .react-datepicker__input-container input {
-  background-color: #1a1d21 !important;
+  background-color: transparent !important;
+  color: #0e1a26 !important;
   width: 100%;
   outline: none;
 }
 
-.react-datepicker__day--selected {
-  background-color: #24ae7c !important;
-  color: #ffffff !important;
-  border-radius: 4px;
-}
-
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected,
 .react-datepicker__time-list-item--selected {
-  background-color: #24ae7c !important;
-}
-
-.react-datepicker__time-container {
-  border-left: 1px solid #363a3d !important;
+  background-color: #15529b !important;
+  color: #ffffff !important;
+  border-radius: 6px;
 }
 
 .react-datepicker__time-list-item {
   display: flex !important;
   align-items: center !important;
+  color: #0e1a26 !important;
 }
 
-/* =====  REACT PHONE NUMBER INPUT OVERRIDES */
+/* ----- react-phone-number-input ----- */
 .PhoneInputInput {
   outline: none;
-  margin-left: 4px;
-  background: #1a1d21;
+  margin-left: 6px;
+  background: transparent;
+  color: #0e1a26;
   font-size: 14px;
   font-weight: 500;
 }
 
+/* Was `color: #1a1d21` — identical to the old input background, so the
+   placeholder was invisible and the field looked broken. */
 .PhoneInputInput::placeholder {
-  color: #1a1d21;
+  color: #7d8c9b;
+}
+
+.PhoneInputCountrySelect {
+  color: #0e1a26;
+}
+
+
+/* ==========================================================================
+   Leaflet theming
+   ========================================================================== */
+.leaflet-container {
+  font-family: inherit;
+  background: #edf2f7;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 16px 40px -12px rgba(14, 26, 38, 0.22);
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #0e1a26;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.85) !important;
+  font-size: 10px !important;
+  color: #66788a !important;
+}
+
+.leaflet-control-zoom a {
+  color: #0e1a26 !important;
+  border-color: #dce4ed !important;
 }
